@@ -19,3 +19,6 @@ lerna-debug.log*
 # OS Files
 .DS_Store
 Thumbs.db
+
+# Expo generated
+expo-env.d.ts
