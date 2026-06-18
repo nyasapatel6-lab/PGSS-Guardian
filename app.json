@@ -1,0 +1,54 @@
+{
+  "expo": {
+    "name": "PGSS Guardian",
+    "slug": "pgss-guardian",
+    "version": "1.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "scheme": "pgssguardian",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0A0A0F"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.elitelab.pgssguardian",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "PGSS Guardian needs your location to include GPS coordinates in fall alerts sent to your guardian.",
+        "NSLocationAlwaysUsageDescription": "PGSS Guardian uses background location for continuous fall monitoring.",
+        "NSLocalNetworkUsageDescription": "PGSS Guardian connects to your ESP32 device on the local WiFi network."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0A0A0F"
+      },
+      "package": "com.elitelab.pgssguardian",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "INTERNET"
+      ]
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "PGSS Guardian uses location for fall alert GPS coordinates."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
