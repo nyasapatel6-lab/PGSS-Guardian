@@ -19,10 +19,6 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
-        name="dashboard"
-        options={{ title: 'Monitor', tabBarIcon: ({ color }) => <TabIcon emoji="❤️" color={color} /> }}
-      />
-      <Tabs.Screen
         name="connect"
         options={{ title: 'Connect', tabBarIcon: ({ color }) => <TabIcon emoji="📡" color={color} /> }}
       />

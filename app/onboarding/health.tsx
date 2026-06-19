@@ -48,7 +48,7 @@ export default function OnboardHealth() {
     };
     await setUser(userData);
     await AsyncStorage.multiRemove(['pgss_ob1', 'pgss_ob2']);
-    router.replace('/(tabs)/dashboard');
+    router.replace('/(tabs)/connect');
   }
 
   return (

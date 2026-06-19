@@ -90,25 +90,6 @@ export default function ConnectScreen() {
         </View>
       )}
 
-      {/* Features */}
-      <View style={styles.featCard}>
-        <Text style={styles.featHdr}>Device Features</Text>
-        {[
-          ['📈', 'MAX30102 Heart Rate', 'Real-time BPM via pulse oximetry sensor'],
-          ['🤸', 'MPU6050 Fall Detection', 'Accelerometer + gyroscope 3-frame debounce'],
-          ['📍', 'NEO-6M GPS Module', 'Coordinates sent with every fall alert'],
-          ['🕐', 'DS3231 RTC', 'Battery-backed timestamps for SPIFFS logs'],
-          ['📡', 'OTA Firmware Update', 'Update via WiFi without USB connection'],
-        ].map(([ico, title, desc]) => (
-          <View key={title} style={styles.featItem}>
-            <Text style={{ fontSize: 17 }}>{ico}</Text>
-            <View style={{ marginLeft: 10, flex: 1 }}>
-              <Text style={{ fontSize: 12, fontWeight: '600', color: COLORS.text }}>{title}</Text>
-              <Text style={{ fontSize: 11, color: COLORS.text3, lineHeight: 16, marginTop: 2 }}>{desc}</Text>
-            </View>
-          </View>
-        ))}
-      </View>
 
       <View style={{ height: 20 }} />
     </ScrollView>
@@ -132,7 +113,4 @@ const styles = StyleSheet.create({
   histTitle: { fontSize: 13, color: COLORS.bluel, fontWeight: '600', marginBottom: 4 },
   histSub: { fontSize: 12, color: COLORS.text2, marginBottom: 8 },
   histBtn: { paddingVertical: 8, paddingHorizontal: 14, backgroundColor: 'rgba(55,138,221,0.15)', borderWidth: 0.5, borderColor: 'rgba(55,138,221,0.4)', borderRadius: RADIUS.small, alignSelf: 'flex-start' },
-  featCard: { marginHorizontal: 14, marginBottom: 14, backgroundColor: COLORS.bg2, borderWidth: 0.5, borderColor: COLORS.border2, borderRadius: RADIUS.card, padding: 14 },
-  featHdr: { fontSize: 11, fontWeight: '600', color: COLORS.text3, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 12 },
-  featItem: { flexDirection: 'row', alignItems: 'flex-start', paddingVertical: 8, borderBottomWidth: 0.5, borderBottomColor: COLORS.border },
 });
