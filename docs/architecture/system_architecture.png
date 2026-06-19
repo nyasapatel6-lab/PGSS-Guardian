@@ -1,0 +1,27 @@
+system_architecture.png
+  MPU6050 Sensor
+       │
+       ▼
+ESP32
+       │
+       ▼
+CNN Fall Detection Model
+       │
+       ▼
+Fall Detected?
+       │
+ ┌─────┴─────┐
+ │           │
+ No         Yes
+ │           │
+ ▼           ▼
+Continue    GPS Module
+Monitoring      │
+                ▼
+         Supabase Database
+                │
+                ▼
+        Guardian Mobile App
+                │
+                ▼
+      Alert + Location Sent
