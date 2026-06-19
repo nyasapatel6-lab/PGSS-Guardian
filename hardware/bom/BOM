@@ -1,0 +1,16 @@
+# PGSS Bill of Materials (BOM)
+
+| # | Component       | Model          | Qty | Unit Cost (INR) | Sourcing        |
+|---|-----------------|----------------|-----|-----------------|-----------------|
+| 1 | Microcontroller | ESP32 DevKit v1| 1   | ₹320            | Robocraze/Amazon|
+| 2 | IMU Sensor      | MPU-6050       | 1   | ₹90             | Robocraze       |
+| 3 | GPS Module      | NEO-6M         | 1   | ₹350            | Quartzcomponents|
+| 4 | RTC Module      | DS3231         | 1   | ₹120            | Robocraze       |
+| 5 | Heart Rate      | MAX30102       | 1   | ₹180            | Robocraze       |
+| 6 | LiPo Battery    | 3.7V 1000mAh   | 1   | ₹250            | Evelta          |
+| 7 | Charging Module | TP4056         | 1   | ₹35             | Robocraze       |
+| 8 | Enclosure       | 3D Printed PLA | 1   | ₹80             | Local FabLab    |
+| 9 | Misc (wires,    | —              | 1   | ₹50             | Any             |
+|   | headers, PCB)   |                |     |                 |                 |
+
+**Total estimated hardware cost: ₹1,475 (~$17 USD)**
