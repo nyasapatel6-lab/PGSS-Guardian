@@ -1,0 +1,22 @@
+Raw Sensor Data
+       │
+       ▼
+Data Cleaning
+       │
+       ▼
+Labeling
+       │
+       ▼
+CNN Training
+       │
+       ▼
+Model Evaluation
+       │
+       ▼
+Model Export
+       │
+       ▼
+pgss_model.h
+       │
+       ▼
+ESP32 Deployment
