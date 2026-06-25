@@ -145,7 +145,7 @@ Monitoring      │
 ## Mobile Application
 
 * React Native
-* Expo SDK 53
+* Expo SDK 54
 * Expo Router
 * TypeScript
 
@@ -157,7 +157,6 @@ Monitoring      │
 ## Database
 
 * Supabase
-* Firebase
 
 ## AI / Machine Learning
 
@@ -171,7 +170,7 @@ Monitoring      │
 
 ## Tech Stack
 
-* Expo SDK 53
+* Expo SDK 54
 * React Native
 * Expo Router
 * TypeScript
@@ -187,7 +186,6 @@ Monitoring      │
 
 Displays:
 
-* Heart Rate
 * Battery Level
 * GPS Coordinates
 * Device Status
@@ -239,11 +237,6 @@ PGSS/
 │   ├── constants/
 │   └── assets/
 │
-├── dashboard/
-│   ├── frontend/
-│   ├── backend/
-│   └── database/
-│
 ├── ai/
 │   ├── dataset/
 │   ├── training/
@@ -284,7 +277,6 @@ Stores:
 
 Stores:
 
-* Heart Rate
 * Battery Level
 * Fall Score
 * GPS Coordinates
@@ -366,23 +358,11 @@ Upload firmware using PlatformIO.
 ## Mobile App
 
 ```bash
-npm install
+npm install --legacy-peer-deps
 npx expo start
 ```
 
 Run using Expo Go or Android Emulator.
-
----
-
-## Backend
-
-```bash
-cd dashboard/backend
-npm install
-npm start
-```
-
-Configure Supabase credentials before deployment.
 
 ---
 
