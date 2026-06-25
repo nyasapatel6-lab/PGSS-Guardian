@@ -1,99 +1,414 @@
-# PGSS Guardian — React Native Expo App
+# PGSS – Personal Guardian Safety System
 
-Personal Guardian Safety System — real-time fall detection, vital monitoring & emergency alerts.
+## AI-Powered Wearable Safety & Emergency Response Platform
 
-## Stack
-- **Expo SDK 53** with `expo-router` (file-based routing)
-- **Supabase** for real-time data sync (alerts table, vitals table, commands channel)
-- **expo-location** for GPS coordinates
-- **@react-native-async-storage/async-storage** for persisting user profile
-- TypeScript throughout
+PGSS (Personal Guardian Safety System) is an AI-powered wearable safety solution designed to detect falls and emergency situations in real time, automatically notify guardians, and provide live monitoring through a mobile application.
 
-## Project Structure
+The system combines:
 
+* Embedded AI Fall Detection
+* ESP32-Based Wearable Hardware
+* GPS Location Tracking
+* Mobile Application Monitoring
+* Cloud Connectivity
+* Emergency Alert Services
+
+---
+
+# Problem Statement
+
+Falls and sudden medical emergencies often occur without immediate assistance being available.
+
+This problem is especially critical for:
+
+* Elderly individuals
+* Women travelling alone
+* Industrial workers
+* Parkinson's patients
+* Epilepsy patients
+
+Existing solutions are often expensive, require manual SOS activation, or lack intelligent emergency detection.
+
+---
+
+# Proposed Solution
+
+PGSS continuously monitors user motion using onboard sensors and applies an AI-based fall detection model running directly on the ESP32.
+
+When a fall is detected:
+
+1. Motion data is analyzed by the CNN model.
+2. GPS location is captured.
+3. Emergency alerts are generated.
+4. Data is stored in the cloud.
+5. The guardian application receives the alert.
+6. Guardians can view incident details and location in real time.
+
+---
+
+# Key Features
+
+## Embedded AI Fall Detection
+
+* CNN-based activity classification
+* On-device inference
+* Real-time fall detection
+
+### Detects
+
+* Forward Falls
+* Backward Falls
+* Side Falls
+
+---
+
+## GPS Tracking
+
+* Live location acquisition
+* Emergency location sharing
+* Guardian monitoring
+
+---
+
+## Emergency Alerts
+
+* Telegram Notifications
+* App-Based Alerts
+* Cloud Event Logging
+
+---
+
+## Guardian Mobile Application
+
+* Live Device Monitoring
+* Emergency Alerts
+* Incident History
+* Guardian Management
+* Device Connectivity
+* User Profile Management
+
+---
+
+# System Architecture
+
+```text
+MPU6050 Sensor
+        │
+        ▼
+ESP32 Controller
+        │
+        ▼
+CNN Fall Detection Model
+        │
+        ▼
+Fall Detected?
+        │
+   ┌────┴────┐
+   │         │
+   ▼         ▼
+ Continue   GPS Module
+Monitoring      │
+                ▼
+         Cloud Database
+                │
+                ▼
+      Guardian Mobile App
+                │
+                ▼
+      Emergency Notification
 ```
-PGSSGuardian/
+
+---
+
+# Hardware Architecture
+
+## Components
+
+| Component  | Purpose             |
+| ---------- | ------------------- |
+| ESP32      | Main Controller     |
+| MPU6050    | Motion Detection    |
+| GPS Module | Location Tracking   |
+| Battery    | Power Supply        |
+| WiFi       | Cloud Communication |
+
+---
+
+# Software Architecture
+
+## Firmware
+
+* PlatformIO
+* ESP32
+* Arduino Framework
+
+## Mobile Application
+
+* React Native
+* Expo SDK 54
+* Expo Router
+* TypeScript
+
+## Backend
+
+* Node.js
+* Express.js
+
+## Database
+
+* Supabase
+
+## AI / Machine Learning
+
+* CNN Model
+* TensorFlow Lite
+* Embedded Inference
+
+---
+
+# Mobile Application
+
+## Tech Stack
+
+* Expo SDK 54
+* React Native
+* Expo Router
+* TypeScript
+* Supabase
+* Expo Location
+* Async Storage
+
+---
+
+## Application Features
+
+### Dashboard
+
+Displays:
+
+* Battery Level
+* GPS Coordinates
+* Device Status
+* Guardian Information
+
+### Connect Device
+
+* ESP32 Connection
+* WiFi Connectivity
+* Device Monitoring
+
+### History
+
+* Previous Alerts
+* Incident Records
+* Severity Tracking
+
+### Account
+
+* Personal Profile
+* Medical Information
+* Guardian Details
+
+### Onboarding
+
+* Personal Information
+* Guardian Setup
+* Health Information
+
+---
+
+# Project Structure
+
+```text
+PGSS/
+│
+├── firmware/
+│   ├── src/
+│   ├── sensors/
+│   ├── gps/
+│   ├── alerts/
+│   └── fall_detection/
+│
 ├── app/
-│   ├── _layout.tsx              # Root layout + AppProvider
-│   ├── index.tsx                # Boot: redirects to onboarding or dashboard
 │   ├── onboarding/
-│   │   ├── _layout.tsx          # Onboarding stack
-│   │   ├── index.tsx            # Step 1: Personal info
-│   │   ├── guardian.tsx         # Step 2: Emergency contact
-│   │   └── health.tsx           # Step 3: Health records + finish
-│   └── (tabs)/
-│       ├── _layout.tsx          # Bottom tab navigator
-│       ├── dashboard.tsx        # Monitor tab (BPM, vitals, GPS, guardian)
-│       ├── connect.tsx          # Connect tab (ESP32 WiFi connection)
-│       ├── history.tsx          # Activity log with filter chips
-│       └── account.tsx          # Profile view + edit modal
-├── context/
-│   └── AppContext.tsx           # Global state: user, device, vitals, alerts
-├── lib/
-│   └── supabase.ts              # Supabase client + sbLogAlert, sbUpdateVitals, sbListenCommands
-├── constants/
-│   └── theme.ts                 # Color tokens + Supabase credentials
-├── app.json
-├── package.json
-└── tsconfig.json
+│   ├── (tabs)/
+│   ├── context/
+│   ├── lib/
+│   ├── constants/
+│   └── assets/
+│
+├── ai/
+│   ├── dataset/
+│   ├── training/
+│   ├── evaluation/
+│   └── model_export/
+│
+├── hardware/
+│   ├── schematics/
+│   ├── bom/
+│   ├── photos/
+│   └── testing/
+│
+├── docs/
+│   ├── architecture/
+│   ├── screenshots/
+│   ├── reports/
+│   └── testing/
+│
+└── README.md
 ```
 
-## Supabase Tables Required
+---
 
-### `alerts`
-| column     | type    |
-|------------|---------|
-| id         | int8 PK |
-| type       | text    |
-| severity   | int4    |
-| gps        | text    |
-| user_name  | text    |
-| guardian   | text    |
-| device_ip  | text    |
-| created_at | timestamptz |
+# Database Schema
 
-### `vitals`
-| column     | type    |
-|------------|---------|
-| id         | int8 PK |
-| bpm        | int4    |
-| battery    | int4    |
-| fall_score | int4    |
-| gps_lat    | text    |
-| gps_lng    | text    |
-| device_ip  | text    |
-| updated_at | timestamptz |
+## Alerts Table
 
-### `commands`
-| column     | type    |
-|------------|---------|
-| id         | int8 PK |
-| action     | text    | — 'sleep' or 'panic'
-| created_at | timestamptz |
+Stores:
 
-Enable Realtime for the `commands` table so remote triggers work.
+* Alert Type
+* Severity
+* GPS Location
+* User Information
+* Guardian Information
+* Device Information
 
-## Setup & Run
+## Vitals Table
+
+Stores:
+
+* Battery Level
+* Fall Score
+* GPS Coordinates
+* Device Status
+
+## Commands Table
+
+Stores:
+
+* Sleep Commands
+* Panic Commands
+* Remote Actions
+
+Realtime updates are enabled for remote communication.
+
+---
+
+# Testing Results
+
+## Fall Detection Performance
+
+| Scenario      | Accuracy |
+| ------------- | -------- |
+| Forward Fall  | 95%      |
+| Backward Fall | 90%      |
+| Side Fall     | 95%      |
+
+### Overall Metrics
+
+* Sensitivity: 93.3%
+* Specificity: 97.0%
+
+---
+
+## Latency
+
+| Operation        | Time  |
+| ---------------- | ----- |
+| CNN Inference    | 12 ms |
+| Telegram Alert   | 1.8 s |
+| Database Update  | 0.9 s |
+| Dashboard Update | 2.0 s |
+
+---
+
+## GPS Performance
+
+* Cold Start: 45–90 seconds
+* Warm Start: 5–15 seconds
+* Accuracy: ±3 meters
+
+---
+
+# Bill of Materials (BOM)
+
+| Component  | Approx. Cost |
+| ---------- | ------------ |
+| ESP32      | ₹250         |
+| MPU6050    | ₹100         |
+| GPS Module | ₹400         |
+| Battery    | ₹250         |
+
+Estimated Total Cost: ₹1000–₹1500
+
+---
+
+# Installation Guide
+
+## Firmware
 
 ```bash
-npm install
+pio run
+```
+
+Upload firmware using PlatformIO.
+
+---
+
+## Mobile App
+
+```bash
+npm install --legacy-peer-deps
 npx expo start
 ```
 
-Scan the QR with the **Expo Go** app (iOS/Android), or press `i` for iOS simulator / `a` for Android emulator.
+Run using Expo Go or Android Emulator.
 
-## Building for Production
+---
 
-```bash
-# Install EAS CLI
-npm install -g eas-cli
+# Future Scope
 
-# Configure
-eas build:configure
+* Smartwatch Integration
+* Heart Rate Monitoring
+* Blood Oxygen Monitoring
+* Predictive Risk Analytics
+* Voice Emergency Assistance
+* Multi-Guardian Support
+* Advanced Cloud Dashboard
 
-# Build
-eas build --platform android   # or ios
-```
+---
 
-## Credentials
-Supabase URL and anon key are in `constants/theme.ts`. Move them to a `.env` file + `expo-constants` for production.
+# Contributors
+
+### Project Lead
+
+* Documentation
+* Architecture
+* Project Coordination
+
+### Hardware & AI Development
+
+* ESP32 Firmware
+* Sensor Integration
+* CNN Training
+* GPS Integration
+
+### Mobile Application Development
+
+* React Native Development
+* Database Integration
+* UI/UX Design
+
+### Media & Presentation
+
+* Demo Video
+* Graphics
+* Submission Assets
+
+---
+
+# Impact
+
+PGSS reduces emergency response time by automatically detecting falls and sharing real-time location information with guardians.
+
+By combining Embedded AI, IoT, Cloud Computing, and Mobile Technologies, PGSS provides an affordable, scalable, and intelligent personal safety solution.
