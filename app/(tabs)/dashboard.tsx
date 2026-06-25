@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet,
-  Linking, Modal, Animated,
+  Linking,
 } from 'react-native';
 import { useApp } from '../../context/AppContext';
 import { COLORS, RADIUS } from '../../constants/theme';
@@ -145,7 +145,7 @@ export default function DashboardScreen() {
             </Text>
             <View style={styles.sevBarBg}>
               <View style={[styles.sevBarFill, {
-                width: `${app.lastSeverity * 10}%` as any,
+                width: `${app.lastSeverity * 10}%` as `${number}%`,
                 backgroundColor: app.lastSeverity <= 3 ? COLORS.teall : app.lastSeverity <= 6 ? COLORS.amber : COLORS.accent2,
               }]} />
             </View>

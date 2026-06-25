@@ -10,7 +10,7 @@ export default function Index() {
   useEffect(() => {
     AsyncStorage.getItem('pgss_u').then((saved) => {
       if (saved) {
-        router.replace('/(tabs)/connect');
+        router.replace('/(tabs)/dashboard');
       } else {
         router.replace('/onboarding');
       }

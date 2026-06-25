@@ -1,3 +1,4 @@
+import { Text } from 'react-native';
 import { Tabs } from 'expo-router';
 import { COLORS } from '../../constants/theme';
 
@@ -19,6 +20,10 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
+        name="dashboard"
+        options={{ title: 'Dashboard', tabBarIcon: ({ color }) => <TabIcon emoji="🏠" color={color} /> }}
+      />
+      <Tabs.Screen
         name="connect"
         options={{ title: 'Connect', tabBarIcon: ({ color }) => <TabIcon emoji="📡" color={color} /> }}
       />
@@ -35,6 +40,5 @@ export default function TabsLayout() {
 }
 
 function TabIcon({ emoji, color }: { emoji: string; color: string }) {
-  const { Text } = require('react-native');
   return <Text style={{ fontSize: 22, opacity: color === COLORS.accent2 ? 1 : 0.5 }}>{emoji}</Text>;
 }
