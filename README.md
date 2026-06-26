@@ -74,7 +74,7 @@ When a fall is detected:
 
 * Telegram Notifications
 * App-Based Alerts
-* Cloud Event Logging
+* Cloud Event Logging such as date, time, location and type
 
 ---
 
@@ -103,10 +103,10 @@ CNN Fall Detection Model
         ▼
 Fall Detected?
         │
-   ┌────┴────┐
-   NO       YES
-   │         │
-   ▼         ▼
+   ┌────┴───────┐
+   NO          YES
+   │            │
+   ▼            ▼
  Continue   GPS Module
 Monitoring      │
                 ▼
@@ -132,6 +132,7 @@ Monitoring      │
 | GPS Module | Location Tracking   |
 | Battery    | Power Supply        |
 | WiFi       | Cloud Communication |
+| RTC Module | Date And Time       |
 
 ---
 
