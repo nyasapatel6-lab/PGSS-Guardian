@@ -104,6 +104,7 @@ CNN Fall Detection Model
 Fall Detected?
         │
    ┌────┴────┐
+   NO       YES
    │         │
    ▼         ▼
  Continue   GPS Module
