@@ -3,6 +3,7 @@ import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet, Modal,
   TextInput, Alert, KeyboardAvoidingView, Platform,
 } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useApp, UserData } from '../../context/AppContext';
 import { COLORS, RADIUS } from '../../constants/theme';
 
@@ -11,14 +12,29 @@ const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 const RELATIONS = ['Parent', 'Spouse', 'Sibling', 'Child', 'Friend', 'Caregiver', 'Other'];
 
 export default function AccountScreen() {
-  const { user, setUser } = useApp();
+  const { user, setUser, logout } = useApp();
+  const router = useRouter();
   const [editVisible, setEditVisible] = useState(false);
 
   if (!user) return null;
 
+  function handleLogout() {
+    Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
+      { text: 'Cancel', onPress: () => {}, style: 'cancel' },
+      {
+        text: 'Sign Out',
+        onPress: async () => {
+          await logout();
+          router.replace('/onboarding');
+        },
+        style: 'destructive',
+      },
+    ]);
+  }
+
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.bg }}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: 12 }}>
         {/* Avatar hero */}
         <View style={styles.hero}>
           <View style={styles.avatar}><Text style={{ fontSize: 30 }}>👤</Text></View>
@@ -54,8 +70,13 @@ export default function AccountScreen() {
           <Text style={{ color: COLORS.text2, fontSize: 13 }}>✏️ Edit Profile</Text>
         </TouchableOpacity>
 
+        <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
+          <Text style={{ color: COLORS.accent2, fontSize: 13 }}>🚪 Sign Out</Text>
+        </TouchableOpacity>
+
         <View style={{ alignItems: 'center', marginBottom: 24, marginTop: 8 }}>
           <Text style={{ fontSize: 11, color: COLORS.text3 }}>PGSS Guardian v1.1.0 · Elite Lab</Text>
+          <Text style={{ fontSize: 10, color: COLORS.text3, marginTop: 3 }}>ESP32 + DS3231 RTC + GPS + MPU6050 + MAX30102 + SPIFFS + OTA</Text>
         </View>
       </ScrollView>
 
@@ -215,6 +236,7 @@ const styles = StyleSheet.create({
   rowKey: { fontSize: 12, color: COLORS.text2 },
   rowVal: { fontSize: 12, fontWeight: '500', color: COLORS.text, textAlign: 'right', maxWidth: '55%' },
   editBtn: { marginHorizontal: 14, marginBottom: 14, marginTop: 4, padding: 12, borderWidth: 0.5, borderColor: COLORS.border2, borderRadius: RADIUS.card, alignItems: 'center' },
+  logoutBtn: { marginHorizontal: 14, marginBottom: 14, padding: 12, borderWidth: 0.5, borderColor: COLORS.accent2, borderRadius: RADIUS.card, alignItems: 'center', backgroundColor: 'rgba(198,40,40,0.08)' },
   modalHdr: { padding: 18, paddingTop: 56, flexDirection: 'row', alignItems: 'center', gap: 12, borderBottomWidth: 0.5, borderBottomColor: COLORS.border2, backgroundColor: COLORS.bg },
   backBtn: { backgroundColor: COLORS.bg3, borderWidth: 0.5, borderColor: COLORS.border2, borderRadius: 8, paddingVertical: 7, paddingHorizontal: 13 },
   saveBtn: { backgroundColor: COLORS.accent, borderRadius: 8, paddingVertical: 7, paddingHorizontal: 16 },
