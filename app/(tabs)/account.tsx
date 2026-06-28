@@ -56,7 +56,6 @@ export default function AccountScreen() {
 
         <View style={{ alignItems: 'center', marginBottom: 24, marginTop: 8 }}>
           <Text style={{ fontSize: 11, color: COLORS.text3 }}>PGSS Guardian v1.1.0 · Elite Lab</Text>
-          <Text style={{ fontSize: 10, color: COLORS.text3, marginTop: 3 }}>ESP32 + DS3231 RTC + GPS + MPU6050 + MAX30102 + SPIFFS + OTA</Text>
         </View>
       </ScrollView>
 
