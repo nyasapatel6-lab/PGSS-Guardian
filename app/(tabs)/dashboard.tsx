@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet,
-  Linking,
+  Linking, Modal, Animated,
 } from 'react-native';
 import { useApp } from '../../context/AppContext';
 import { COLORS, RADIUS } from '../../constants/theme';
@@ -32,8 +32,6 @@ function useClock() {
 export default function DashboardScreen() {
   const app = useApp();
   const clock = useClock();
-  const bpm = app.currentBpm;
-  const bpmStatus = bpm > 100 ? 'HIGH' : bpm < 55 ? 'LOW' : 'Normal';
 
   function openMaps() {
     if (app.gpsCoords) {
@@ -102,32 +100,6 @@ export default function DashboardScreen() {
         {/* RTC Clock */}
         <Text style={styles.rtcClock}>{clock}</Text>
 
-        {/* BPM Hero */}
-        <View style={styles.heroCard}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-            <View style={[styles.liveDot]} />
-            <Text style={{ fontSize: 10, color: COLORS.text3, marginLeft: 6, letterSpacing: 1, textTransform: 'uppercase' }}>Live Heart Rate</Text>
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
-            <Text style={styles.bpmNum}>{bpm}</Text>
-            <Text style={styles.bpmUnit}>BPM</Text>
-            <View style={{ marginLeft: 'auto' }}>
-              <View style={[styles.bpmTag, bpmStatus === 'Normal' ? styles.tagNormal : bpmStatus === 'HIGH' ? styles.tagHigh : styles.tagLow]}>
-                <Text style={[styles.bpmTagTxt, bpmStatus === 'Normal' ? { color: COLORS.teall } : bpmStatus === 'HIGH' ? { color: COLORS.accent2 } : { color: COLORS.amber }]}>{bpmStatus}</Text>
-              </View>
-            </View>
-          </View>
-          {/* Mini ECG bars */}
-          <View style={{ flexDirection: 'row', height: 36, alignItems: 'flex-end', gap: 2, marginTop: 10 }}>
-            {app.bpmHistory.map((v, i) => {
-              const max = Math.max(...app.bpmHistory);
-              const min = Math.min(...app.bpmHistory);
-              const h = Math.round(8 + ((v - min) / (max - min || 1)) * 26);
-              return <View key={i} style={{ flex: 1, height: h, borderRadius: 2, backgroundColor: v > 100 ? 'rgba(239,83,80,0.6)' : 'rgba(29,158,117,0.5)' }} />;
-            })}
-          </View>
-        </View>
-
         {/* Stats grid */}
         <View style={styles.statsGrid}>
           <StatCard icon="📍" badge="READY" badgeStyle="info" val="SAFE" valColor={COLORS.green} label="FALL DETECT" sub="3-frame debounce" />
@@ -145,7 +117,7 @@ export default function DashboardScreen() {
             </Text>
             <View style={styles.sevBarBg}>
               <View style={[styles.sevBarFill, {
-                width: `${app.lastSeverity * 10}%` as `${number}%`,
+                width: `${app.lastSeverity * 10}%` as any,
                 backgroundColor: app.lastSeverity <= 3 ? COLORS.teall : app.lastSeverity <= 6 ? COLORS.amber : COLORS.accent2,
               }]} />
             </View>
@@ -247,15 +219,6 @@ const styles = StyleSheet.create({
   sdot: { width: 8, height: 8, borderRadius: 4 },
   statusTxt: { fontSize: 12, color: COLORS.text2 },
   rtcClock: { fontSize: 11, color: COLORS.text3, textAlign: 'center', marginBottom: 8 },
-  heroCard: { marginHorizontal: 14, marginBottom: 14, backgroundColor: COLORS.bg2, borderWidth: 0.5, borderColor: COLORS.border2, borderRadius: RADIUS.card, padding: 18 },
-  liveDot: { width: 5, height: 5, borderRadius: 3, backgroundColor: COLORS.accent2 },
-  bpmNum: { fontSize: 52, fontWeight: '700', color: COLORS.accent2, letterSpacing: -2 },
-  bpmUnit: { fontSize: 15, color: COLORS.text3, paddingBottom: 8, marginLeft: 6 },
-  bpmTag: { paddingHorizontal: 9, paddingVertical: 4, borderRadius: 4 },
-  bpmTagTxt: { fontSize: 11, fontWeight: '600' },
-  tagNormal: { backgroundColor: 'rgba(29,158,117,0.2)' },
-  tagHigh: { backgroundColor: 'rgba(198,40,40,0.2)' },
-  tagLow: { backgroundColor: 'rgba(239,159,39,0.2)' },
   statsGrid: { marginHorizontal: 14, marginBottom: 14, flexDirection: 'row', flexWrap: 'wrap', gap: 9 },
   statCard: { width: '47.5%', backgroundColor: COLORS.bg2, borderWidth: 0.5, borderColor: COLORS.border2, borderRadius: RADIUS.card, padding: 14 },
   card: { marginHorizontal: 14, marginBottom: 14, backgroundColor: COLORS.bg2, borderWidth: 0.5, borderColor: COLORS.border2, borderRadius: RADIUS.card, padding: 14 },
