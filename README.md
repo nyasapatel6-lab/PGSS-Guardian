@@ -188,9 +188,11 @@ Monitoring      │
 
 Displays:
 
+* Device Connection Status
 * Battery Level
-* GPS Coordinates
-* Device Status
+* GPS Location
+* Fall Detection Status
+* Emergency Alerts
 * Guardian Information
 
 ### Connect Device
@@ -283,6 +285,7 @@ Stores:
 * Fall Score
 * GPS Coordinates
 * Device Status
+* Date and Time
 
 ## Commands Table
 
