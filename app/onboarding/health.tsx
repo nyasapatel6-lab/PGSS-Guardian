@@ -48,12 +48,12 @@ export default function OnboardHealth() {
     };
     await setUser(userData);
     await AsyncStorage.multiRemove(['pgss_ob1', 'pgss_ob2']);
-    router.replace('/(tabs)/dashboard');
+    router.replace('/(tabs)/connect');
   }
 
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: COLORS.bg }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingTop: 12 }}>
         <View style={styles.hero}>
           <Text style={styles.heroIcon}>🏥</Text>
           <Text style={styles.heroTitle}>Health <Text style={{ color: COLORS.accent2 }}>History</Text></Text>

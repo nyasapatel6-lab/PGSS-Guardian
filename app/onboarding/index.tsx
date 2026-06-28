@@ -30,7 +30,7 @@ export default function OnboardStep1() {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: COLORS.bg }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView contentContainerStyle={[styles.scroll, { paddingTop: 12 }]}>
         {/* Hero */}
         <View style={styles.hero}>
           <Text style={styles.heroIcon}>🛡️</Text>

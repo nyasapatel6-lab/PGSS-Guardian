@@ -28,7 +28,7 @@ export default function OnboardGuardian() {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: COLORS.bg }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingTop: 12 }}>
         <View style={styles.hero}>
           <Text style={styles.heroIcon}>👥</Text>
           <Text style={styles.heroTitle}>Emergency <Text style={{ color: COLORS.accent2 }}>Contact</Text></Text>
