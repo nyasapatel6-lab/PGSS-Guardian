@@ -76,6 +76,7 @@ interface AppState {
   requestSummary: () => void;
   addLog: (entry: Omit<LogEntry, 'id'>) => void;
   refreshGPS: () => void;
+  logout: () => void;
   panicVisible: boolean;
   setPanicVisible: (v: boolean) => void;
 }
@@ -144,19 +145,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const simTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const unsubRef = useRef<(() => void) | null>(null);
 
-  // Refs to avoid stale closures inside setInterval callbacks
-  const gpsCoordsRef = useRef(gpsCoords);
-  const connectedRef = useRef(connected);
-  const userRef = useRef(user);
-  const deviceIPRef = useRef(deviceIP);
-  const sleepModeRef = useRef(sleepMode);
-
-  useEffect(() => { gpsCoordsRef.current = gpsCoords; }, [gpsCoords]);
-  useEffect(() => { connectedRef.current = connected; }, [connected]);
-  useEffect(() => { userRef.current = user; }, [user]);
-  useEffect(() => { deviceIPRef.current = deviceIP; }, [deviceIP]);
-  useEffect(() => { sleepModeRef.current = sleepMode; }, [sleepMode]);
-
   // ── Persist / load user ──────────────────────────────────────────────────
   const setUser = useCallback(async (u: UserData) => {
     setUserState(u);
@@ -194,7 +182,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (!user) return;
     startSim();
     const stepInt = setInterval(() => {
-      if (!sleepModeRef.current) setStepCount((s) => s + Math.round(Math.random() * 3));
+      if (!sleepMode) setStepCount((s) => s + Math.round(Math.random() * 3));
     }, 5000);
     return () => {
       if (simTimerRef.current) clearInterval(simTimerRef.current);
@@ -214,9 +202,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         const next = [...prev, bpm];
         return next.length > 10 ? next.slice(-10) : next;
       });
-      if (connectedRef.current) setBattery(85 + Math.round(Math.random() * 10));
-      if (connectedRef.current && userRef.current) {
-        sbUpdateVitals({ bpm, battery: connectedRef.current ? 90 : 0, fall_score: 0, gps: gpsCoordsRef.current, device: deviceIPRef.current });
+      if (connected) setBattery(85 + Math.round(Math.random() * 10));
+      if (connected && user) {
+        sbUpdateVitals({ bpm, battery: connected ? 90 : 0, fall_score: 0, gps: gpsCoords, device: deviceIP });
       }
     }, 2000);
   }
@@ -258,12 +246,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
             if (d.battery) setBattery(d.battery);
             if (d.fall) triggerFallAlert(d.fall_score ?? Math.ceil(Math.random() * 5 + 3));
             if (d.gps) setGpsCoords({ lat: d.gps.lat, lng: d.gps.lng });
-            sbUpdateVitals({ bpm: d.bpm, battery: d.battery ?? 85, fall_score: d.fall_score ?? 0, gps: gpsCoordsRef.current, device: ip });
+            sbUpdateVitals({ bpm: d.bpm, battery: d.battery ?? 85, fall_score: d.fall_score ?? 0, gps: gpsCoords, device: ip });
           }
         } catch { /* device offline — sim continues */ }
       }, 2000);
     }, 1000);
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gpsCoords]);
 
   const disconnectDevice = useCallback(() => {
     setConnected(false);
@@ -340,6 +329,26 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setLogData((prev) => [{ ...entry, id: Date.now() }, ...prev]);
   }, []);
 
+  const logout = useCallback(async () => {
+    setUserState(null);
+    setConnected(false);
+    setDeviceIP('');
+    setBpmHistory([]);
+    setLogData([]);
+    setFallsToday(0);
+    setAlertsToday(0);
+    setStepCount(0);
+    setLastSeverity(0);
+    setGpsCoords(null);
+    setCurrentBpm(72);
+    setBattery(0);
+    setFallDetected(false);
+    if (pollTimerRef.current) clearInterval(pollTimerRef.current);
+    if (simTimerRef.current) clearInterval(simTimerRef.current);
+    if (unsubRef.current) unsubRef.current();
+    await AsyncStorage.removeItem('pgss_u');
+  }, []);
+
   return (
     <AppContext.Provider
       value={{
@@ -368,6 +377,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         requestSummary,
         addLog,
         refreshGPS,
+        logout,
         panicVisible,
         setPanicVisible,
       }}
