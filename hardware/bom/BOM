@@ -1,16 +1,47 @@
 # PGSS Bill of Materials (BOM)
 
-| # | Component       | Model          | Qty | Unit Cost (INR) | Sourcing        |
-|---|-----------------|----------------|-----|-----------------|-----------------|
-| 1 | Microcontroller | ESP32 DevKit v1| 1   | ₹320            | Robocraze/Amazon|
-| 2 | IMU Sensor      | MPU-6050       | 1   | ₹90             | Robocraze       |
-| 3 | GPS Module      | NEO-6M         | 1   | ₹350            | Quartzcomponents|
-| 4 | RTC Module      | DS3231         | 1   | ₹120            | Robocraze       |
-| 5 | Heart Rate      | MAX30102       | 1   | ₹180            | Robocraze       |
-| 6 | LiPo Battery    | 3.7V 1000mAh   | 1   | ₹250            | Evelta          |
-| 7 | Charging Module | TP4056         | 1   | ₹35             | Robocraze       |
-| 8 | Enclosure       | 3D Printed PLA | 1   | ₹80             | Local FabLab    |
-| 9 | Misc (wires,    | —              | 1   | ₹50             | Any             |
-|   | headers, PCB)   |                |     |                 |                 |
+## TIER 1: Critical (Must Buy) - ₹1,834
 
-**Total estimated hardware cost: ₹1,475 (~$17 USD)**
+| # | Component       | Model          | Qty | Unit Cost (INR) | Total Cost (INR) | Sourcing        |
+|---|-----------------|----------------|-----|-----------------|------------------|-----------------|
+| 1 | Microcontroller | ESP32 DevKit v1| 1   | ₹320            | ₹320             | Robocraze/Amazon|
+| 2 | IMU Sensor      | MPU-6050       | 1   | ₹90             | ₹90              | Robocraze       |
+| 3 | GPS Module      | NEO-6M         | 1   | ₹350            | ₹350             | Quartzcomponents|
+| 4 | RTC Module      | DS3231         | 1   | ₹120            | ₹120             | Robocraze       |
+| 5 | Heart Rate      | MAX30102       | 1   | ₹180            | ₹180             | Robocraze       |
+| 6 | LiPo Battery    | 3.7V 3000mAh   | 1   | ₹450            | ₹450             | Evelta          |
+| 7 | Charging Module | TP4056         | 1   | ₹35             | ₹35              | Robocraze       |
+| 8 | GSM Module      | SIM800L        | 1   | ₹350            | ₹350             | Robocraze       |
+| 9 | Boost Converter | MT3608         | 1   | ₹49             | ₹49              | Robocraze       |
+
+## TIER 2: Important - ₹1,442
+
+| # | Component               | Model          | Qty | Unit Cost (INR) | Total Cost (INR) | Sourcing        |
+|---|-------------------------|----------------|-----|-----------------|------------------|-----------------|
+| 10| OLED Display            | SSD1306 I2C    | 1   | ₹120            | ₹120             | Robocraze       |
+| 11| SPDT Slide Switch       | —              | 1   | ₹15             | ₹15              | Any             |
+| 12| Battery Fuel Gauge      | MAX17043       | 1   | ₹180            | ₹180             | Robocraze       |
+| 13| Jumper Wires            | —              | 1   | ₹0              | ₹0               | Any             |
+| 14| Enclosure               | 3D Printed PLA | 1   | ₹80             | ₹80              | Local FabLab    |
+| 15| Misc (headers, PCB)     | —              | 1   | ₹50             | ₹50              | Any             |
+
+## TIER 3: Wearable Accessories - ₹947
+
+| # | Component               | Model          | Qty | Unit Cost (INR) | Total Cost (INR) | Sourcing        |
+|---|-------------------------|----------------|-----|-----------------|------------------|-----------------|
+| 16| Nylon Wrist Belt        | —              | 1   | ₹169            | ₹169             | Amazon          |
+| 17| Velcro Roll             | —              | 1   | ₹217            | ₹217             | Amazon          |
+| 18| 3D Pen                  | —              | 1   | ₹188            | ₹188             | Amazon          |
+| 19| Transparent Clear Tape  | —              | 1   | ₹174            | ₹174             | Amazon          |
+| 20| 3D Pen Refills          | —              | 1   | ₹199            | ₹199             | Amazon          |
+
+---
+
+**Summary:**
+- **Tier 1 (Critical):** ₹1,834
+- **Tier 2 (Important):** ₹1,442
+- **Tier 3 (Accessories):** ₹947
+
+**Total estimated hardware cost: ₹4,223 (~$51 USD)**
+
+*Note: Original estimate was ₹1,475. Updated with enhanced components including GSM module for SMS alerts, upgraded 3000mAh battery for longer runtime, OLED display for status monitoring, and wearable mounting accessories.*
