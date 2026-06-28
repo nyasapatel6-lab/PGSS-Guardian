@@ -33,7 +33,7 @@ export default function HistoryScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: COLORS.bg }}>
+    <View style={{ flex: 1, backgroundColor: COLORS.bg, paddingTop: 12 }}>
       {/* Header */}
       <View style={{ padding: 18, paddingBottom: 6 }}>
         <Text style={{ fontSize: 21, fontWeight: '700', color: COLORS.text }}>Activity Log</Text>

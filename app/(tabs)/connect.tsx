@@ -23,7 +23,7 @@ export default function ConnectScreen() {
   }
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: COLORS.bg }} showsVerticalScrollIndicator={false}>
+    <ScrollView style={{ flex: 1, backgroundColor: COLORS.bg }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: 12 }}>
       {/* Hero */}
       <View style={styles.hero}>
         <Text style={styles.heroIcon}>📡</Text>
