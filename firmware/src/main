@@ -18,6 +18,8 @@
 #include <mbedtls/sha256.h>
 #include <Preferences.h>
 #include <WiFiClientSecure.h>
+#include "battery_monitor.h"
+#include "oled_display.h"
 
 #define TENSOR_ARENA_SIZE (68 * 1024)
 alignas(16) static uint8_t tensor_arena[TENSOR_ARENA_SIZE];
@@ -34,10 +36,15 @@ const char* WIFI_PASSWORD = "9890490452";
 const char* BOT_TOKEN     = "8928384396:AAH2OqesCLvXLV18JrcgsF8jTeNqXZQx0Qw";
 const char* CHAT_ID       = "6050788061";
 const char* GMAIL_FROM    = "ashish.devvv9@gmail.com";
-const char* GMAIL_PASS    = "soapdcahstaappsu";
+const char* GMAIL_PASS    = "dpeoockhqpgnlrqb";
 const char* GMAIL_TO      = "ashish.works@gmail.com";
 const char* GDRIVE_UPLOAD_URL = "";
 const char* GDRIVE_OTA_URL    = "";
+
+const char* SUPABASE_URL  = "https://qgrbsnnuwxgvdoaqicze.supabase.co";
+const char* SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFncmJzbm51d3hndmRvYXFpY3plIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3NjM5MzIsImV4cCI6MjA5NzMzOTkzMn0.0lNuif1wo8MAzJn9zoPD15t_IYTiMaxCcm016OcJlm4"; // same anon key already used in constants/theme.ts
+const char* PGSS_USER_NAME = "Kajal";
+const char* PGSS_GUARDIAN  = "";   // guardian contact string, optional
 
 #define SDA_PIN        21
 #define SCL_PIN        22
@@ -296,9 +303,11 @@ void sendTelegram(String message) {
   if (WiFi.status() != WL_CONNECTED) return;
   String m = message;
   m.replace("\n", "\\n");
+  WiFiClientSecure tls_client;
+  tls_client.setInsecure();
   HTTPClient http;
   String url = "https://api.telegram.org/bot" + String(BOT_TOKEN) + "/sendMessage";
-  http.begin(url);
+  http.begin(tls_client, url);
   http.addHeader("Content-Type", "application/json");
   String payload = "{\"chat_id\":" + String(CHAT_ID) +
                    ",\"text\":\"" + m +
@@ -393,6 +402,69 @@ String buildLocationString() {
          String(gps_lat, 6) + "," + String(gps_lng, 6);
 }
 
+bool sbPostAlert(String type, int severity, bool haveGps, double lat, double lng) {
+  if (WiFi.status() != WL_CONNECTED) return false;
+
+  WiFiClientSecure client;
+  client.setInsecure();
+  HTTPClient http;
+  String url = String(SUPABASE_URL) + "/rest/v1/alerts";
+  http.begin(client, url);
+  http.addHeader("Content-Type", "application/json");
+  http.addHeader("apikey", SUPABASE_ANON);
+  http.addHeader("Authorization", "Bearer " + String(SUPABASE_ANON));
+  http.addHeader("Prefer", "return=minimal");
+
+  String gpsStr = haveGps ? (String(lat, 6) + "," + String(lng, 6)) : "";
+  String payload = "{";
+  payload += "\"type\":\"" + type + "\",";
+  payload += "\"severity\":" + String(severity) + ",";
+  payload += "\"gps\":" + (haveGps ? ("\"" + gpsStr + "\"") : "null") + ",";
+  payload += "\"user_name\":\"" + String(PGSS_USER_NAME) + "\",";
+  payload += "\"guardian\":\"" + String(PGSS_GUARDIAN) + "\",";
+  payload += "\"device_ip\":\"" + WiFi.localIP().toString() + "\"";
+  payload += "}";
+
+  esp_task_wdt_reset();
+  int code = http.POST(payload);
+  esp_task_wdt_reset();
+  bool ok = (code == 200 || code == 201);
+  Serial.println(ok ? "Supabase: alert row inserted"
+                     : ("Supabase: alert insert FAILED (" + String(code) + ") " + http.getString()));
+  http.end();
+  return ok;
+}
+
+bool sbPostVitals(int battery, float fallScore, bool haveGps, double lat, double lng) {
+  if (WiFi.status() != WL_CONNECTED) return false;
+
+  WiFiClientSecure client;
+  client.setInsecure();
+  HTTPClient http;
+  String url = String(SUPABASE_URL) + "/rest/v1/vitals?on_conflict=id";
+  http.begin(client, url);
+  http.addHeader("Content-Type", "application/json");
+  http.addHeader("apikey", SUPABASE_ANON);
+  http.addHeader("Authorization", "Bearer " + String(SUPABASE_ANON));
+  http.addHeader("Prefer", "resolution=merge-duplicates,return=minimal");
+
+  String payload = "{";
+  payload += "\"id\":1,";
+  payload += "\"battery\":" + String(battery) + ",";
+  payload += "\"fall_score\":" + String(fallScore, 3) + ",";
+  payload += "\"gps_lat\":" + (haveGps ? String(lat, 6) : "null") + ",";
+  payload += "\"gps_lng\":" + (haveGps ? String(lng, 6) : "null") + ",";
+  payload += "\"device_ip\":\"" + WiFi.localIP().toString() + "\"";
+  payload += "}";
+
+  int code = http.POST(payload);
+  bool ok = (code == 200 || code == 201 || code == 204);
+  Serial.println(ok ? "Supabase: vitals updated"
+                     : ("Supabase: vitals update FAILED (" + String(code) + ") " + http.getString()));
+  http.end();
+  return ok;
+}
+
 void sendAlerts() {
   if (strlen(WIFI_SSID) == 0 || strlen(BOT_TOKEN) == 0 || strlen(GMAIL_FROM) == 0) {
     Serial.println("ERROR: Credentials not set");
@@ -415,6 +487,12 @@ void sendAlerts() {
     "<i>PGSS - Elite Lab</i>";
 
   sendTelegram(tg_msg);
+
+  sbPostAlert(
+    (alert_type == "MANUAL") ? "manual" : "fall",
+    severity_score,
+    gps_valid, gps_lat, gps_lng
+  );
 
   String email_body =
     "PGSS FALL ALERT\n\n"
@@ -794,20 +872,11 @@ void updateStepCount(float accel_mag) {
 }
 
 float runInference() {
-  const float ACCEL_LSB_TO_G  = 1.0f / 2048.0f;
-  const float GYRO_LSB_TO_DPS = 1.0f / 16.4f;
   for (int i = 0; i < WINDOW_SIZE; i++) {
     int buf_i = (write_index + i) % WINDOW_SIZE;
-    float converted[N_FEATURES];
-    converted[0] = window_buffer[buf_i][0] * ACCEL_LSB_TO_G;
-    converted[1] = window_buffer[buf_i][1] * ACCEL_LSB_TO_G;
-    converted[2] = window_buffer[buf_i][2] * ACCEL_LSB_TO_G;
-    converted[3] = window_buffer[buf_i][3] * GYRO_LSB_TO_DPS;
-    converted[4] = window_buffer[buf_i][4] * GYRO_LSB_TO_DPS;
-    converted[5] = window_buffer[buf_i][5] * GYRO_LSB_TO_DPS;
     for (int j = 0; j < N_FEATURES; j++) {
       tf_input->data.f[i * N_FEATURES + j] =
-        (converted[j] - SCALER_MEAN[j]) / SCALER_STD[j];
+        (window_buffer[buf_i][j] - SCALER_MEAN[j]) / SCALER_STD[j];
     }
   }
   esp_task_wdt_reset();
@@ -887,7 +956,14 @@ void setup() {
   last_summary_time = millis();
 
   Serial.println("PGSS Ready");
+  digitalWrite(BUZZER_PIN, HIGH); delay(500); digitalWrite(BUZZER_PIN, LOW);
   Serial.println("timestamp_ms,ax,ay,az,gx,gy,gz,fall_score,status");
+
+  // --- New: battery monitor + OLED. Deliberately last in setup() so a
+  // failure here (e.g. OLED not wired yet) never blocks fall detection,
+  // GPS, WiFi, or the TFLite model from initializing above this point.
+  initBatteryMonitor();
+  initOLED();
 }
 
 void loop() {
@@ -900,6 +976,34 @@ void loop() {
   handleButton();
   handleAlertRounds();
   web_server.handleClient();
+
+  // --- New: push a live vitals row to Supabase every ~20s, non-blocking.
+  static unsigned long last_vitals_push = 0;
+  if (now - last_vitals_push > 20000) {
+    last_vitals_push = now;
+    sbPostVitals(getBatteryPercent(), last_fall_score, gps_valid, gps_lat, gps_lng);
+  }
+
+  // --- New: battery % + OLED refresh, every 2s, non-blocking (same
+  // millis() pattern as the rest of this loop -- no delay() added).
+  static unsigned long last_oled_update  = 0;
+  static bool           low_batt_alerted = false;
+  if (now - last_oled_update >= 2000) {
+    last_oled_update = now;
+    int batt_pct = getBatteryPercent();
+    updateOLED(batt_pct, WiFi.status() == WL_CONNECTED, fall_active, sleep_mode);
+
+    // One-shot warning blink at 15% -- resets once battery is back above 20%
+    // (charged), so it can re-fire on the next discharge cycle instead of
+    // going silent forever after the first trip.
+    if (batt_pct <= 15 && !low_batt_alerted) {
+      low_batt_alerted = true;
+      Serial.println("WARN: Battery low (<=15%)");
+      blinkLED(4); // distinct from sleep(2)/awake(3)/panic patterns already in use
+    } else if (batt_pct > 20) {
+      low_batt_alerted = false;
+    }
+  }
 
   if (now - last_summary_time >= SUMMARY_INTERVAL_MS) {
     last_summary_time = now;
