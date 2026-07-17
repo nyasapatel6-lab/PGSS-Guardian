@@ -9,6 +9,7 @@
 PGSS (Personal Guardian Safety System) is an AI-powered **waist-mounted wearable** designed to predict falls before they happen, detect confirmed falls in real time, and automatically notify guardians with the user's live GPS location.
 
 The system uses an ESP32 running a TensorFlow Lite CNN model to analyze motion data from the MPU6050. When instability is detected, the wearable warns the user through vibration, buzzer, LEDs, and an OLED display. If a fall is confirmed, GPS coordinates are captured, the event is logged to Supabase, and emergency notifications are sent to the React Native app and Telegram.
+
 Website: https://pgss-guardian-sentinel.lovable.app/
 
 ---
