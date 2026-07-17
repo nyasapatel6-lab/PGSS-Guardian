@@ -45,6 +45,13 @@
         {
           "locationAlwaysAndWhenInUsePermission": "PGSS Guardian uses location for fall alert GPS coordinates."
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "PGSS Guardian needs camera access to scan QR codes for device connection.",
+          "barcodeScannerEnabled": true
+        }
       ]
     ],
     "experiments": {
