@@ -1,0 +1,20 @@
+10:#include "pgss_model.h"
+12:#include <tensorflow/lite/micro/micro_interpreter.h>
+25:static const tflite::Model*      tf_model    = nullptr;
+26:static tflite::MicroInterpreter* interpreter = nullptr;
+27:static TfLiteTensor*             tf_input    = nullptr;
+28:static TfLiteTensor*             tf_output   = nullptr;
+30:static tflite::MicroMutableOpResolver<23> resolver;
+193:  tf_model = tflite::GetModel(pgss_model_data);
+199:  static tflite::MicroErrorReporter micro_error_reporter;
+200:  static tflite::MicroInterpreter static_interpreter(
+203:  interpreter = &static_interpreter;
+209:  if (interpreter->AllocateTensors() != kTfLiteOk) {
+211:    Serial.printf("Arena used before fail: %d\n", interpreter->arena_used_bytes());
+215:  tf_input  = interpreter->input(0);
+216:  tf_output = interpreter->output(0);
+218:  if (tf_input->type != kTfLiteFloat32) {
+221:  if (tf_output->type != kTfLiteFloat32) {
+226:  Serial.print("Arena used: "); Serial.println(interpreter->arena_used_bytes());
+803:        (window_buffer[buf_i][j] - SCALER_MEAN[j]) / SCALER_STD[j];
+807:  if (interpreter->Invoke() != kTfLiteOk) {

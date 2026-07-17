@@ -1,0 +1,33 @@
+54:#ifndef FALL_THRESHOLD
+55:#define FALL_THRESHOLD 0.45f
+67:static int fall_confirm_count = 0;
+113:float         last_fall_score     = 0.0f;
+144:void resetAlert();
+251:  float score_norm = (score - FALL_THRESHOLD) / (1.0f - FALL_THRESHOLD);
+462:void resetAlert() {
+473:  fall_confirm_count  = 0;
+501:        resetAlert();
+511:        resetAlert();
+522:void handleAlertRounds() {
+530:    severity_score = computeSeverity(last_fall_score, stillness_ms);
+532:      saveFallToLittleFS(alert_type, last_fall_score, severity_score);
+559:      resetAlert();
+585:    last_fall_score = 1.0f;
+586:    saveFallToLittleFS(type, last_fall_score, severity_score);
+884:  Serial.println("timestamp_ms,ax,ay,az,gx,gy,gz,fall_score,status");
+895:  handleAlertRounds();
+907:      if (fall_active) { resetAlert(); Serial.println("Alert cancelled"); }
+924:        Serial.print("Threshold: "); Serial.println(FALL_THRESHOLD, 6);
+925:        Serial.println(score > FALL_THRESHOLD ? "RESULT: FALL" : "RESULT: NO FALL");
+975:  float fall_score = runInference();
+978:  if (fall_score < 0.1f) { fall_confirm_count = 0; fall_miss_count = 0; }
+994:        Serial.print(fall_score, 4); Serial.print(",COOLDOWN");
+1001:  if (fall_score >= FALL_THRESHOLD && sample_count >= WINDOW_SIZE && !fall_active) {
+1002:    fall_confirm_count++;
+1004:    if (fall_confirm_count >= FALL_CONFIRM_FRAMES) {
+1005:      fall_confirm_count = 0; fall_miss_count = 0;
+1006:      last_fall_score = fall_score;
+1013:    fall_confirm_count = 0; fall_miss_count = 0;
+1017:    if (fall_miss_count >= FALL_MISS_FRAMES) { fall_confirm_count=0; fall_miss_count=0; }
+1018:    if (fall_score > 0.3f) {
+1035:    Serial.print(fall_score, 4); Serial.print(",");

@@ -1,0 +1,13 @@
+Battery
+   │
+   ▼
+ESP32
+ │   │
+ │   ├── MPU6050
+ │   │
+ │   ├── GPS Module
+ │   │
+ │   └── WiFi Module
+ │
+ ▼
+Cloud Database

@@ -1,0 +1,17 @@
+36:const char* GMAIL_FROM    = "";
+38:const char* GMAIL_TO      = "";
+143:void sendAlerts();
+295:void sendTelegram(String message) {
+302:  String url = "https://api.telegram.org/bot" + String(BOT_TOKEN) + "/sendMessage";
+305:  String payload = "{\"chat_id\":" + String(CHAT_ID) +
+314:    Serial.println("Telegram sent OK");
+316:    Serial.println("Telegram failed: " + String(response));
+326:  if (!client.connect("smtp.gmail.com", 465)) {
+327:    Serial.println("Gmail: connection failed");
+371:    Serial.println("Gmail: auth failed -- " + authResp);
+389:  Serial.println("Gmail sent");
+398:void sendAlerts() {
+419:  sendTelegram(tg_msg);
+534:    sendAlerts();
+758:    sendTelegram(msg);
+784:  sendTelegram(msg);

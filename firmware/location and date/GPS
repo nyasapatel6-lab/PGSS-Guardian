@@ -1,0 +1,22 @@
+5:#include <TinyGPS++.h>
+46:#define GPS_RX_PIN     16
+47:#define GPS_TX_PIN     17
+86:TinyGPSPlus    gps;
+87:HardwareSerial gpsSerial(2);
+132:double gps_lat   = 0.0;
+133:double gps_lng   = 0.0;
+134:bool   gps_valid = false;
+266:void updateGPS() {
+267:  while (gpsSerial.available() > 0) gps.encode(gpsSerial.read());
+268:  if (gps.location.isValid() && gps.location.isUpdated()) {
+269:    gps_lat   = gps.location.lat();
+270:    gps_lng   = gps.location.lng();
+271:    gps_valid = true;
+393:  if (!gps_valid) return "Location: Not available (GPS acquiring)";
+395:         String(gps_lat, 6) + "," + String(gps_lng, 6);
+426:    "GPS: " + (gps_valid
+427:      ? (String(gps_lat, 6) + ", " + String(gps_lng, 6))
+626:                String(gps_lat, 6) + "|" + String(gps_lng, 6) + "\n";
+730:        :"No GPS";
+825:  gpsSerial.begin(9600, SERIAL_8N1, GPS_RX_PIN, GPS_TX_PIN);
+893:  updateGPS();

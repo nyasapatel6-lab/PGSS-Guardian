@@ -1,0 +1,15 @@
+17:#include <RTClib.h>
+88:RTC_DS3231     rtc;
+91:bool           rtc_valid  = false;
+232:  if (rtc_valid) {
+233:    DateTime t = rtc.now();
+239:    snprintf(buf, sizeof(buf), "Uptime %02lu:%02lu:%02lu (no RTC)",
+246:  if (!rtc_valid) return -1;
+247:  return rtc.now().hour();
+827:  if (rtc.begin()) {
+828:    if (rtc.lostPower()) rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+829:    DateTime t = rtc.now();
+831:      rtc_valid = true;
+832:      Serial.printf("RTC time: %04d-%02d-%02d %02d:%02d:%02d\n",
+835:      Serial.printf("WARN: RTC implausible year (%d)\n", t.year());
+838:    Serial.println("WARN: DS3231 not found -- uptime fallback");

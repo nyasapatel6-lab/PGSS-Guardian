@@ -1,0 +1,22 @@
+2:#include <MPU6050.h>
+85:MPU6050        mpu(0x69);
+124:float         prev_accel_mag      = 0.0f;
+151:int   computeSeverity(float score, unsigned long stillness_ms);
+250:int computeSeverity(float score, unsigned long stillness_ms) {
+530:    severity_score = computeSeverity(last_fall_score, stillness_ms);
+768:void checkNoMotion(float accel_magnitude) {
+770:  float delta = fabsf(accel_magnitude - prev_motion_mag);
+771:  prev_motion_mag = accel_magnitude;
+788:void updateStepCount(float accel_mag) {
+790:  if (accel_mag > STEP_MAG_THRESHOLD && prev_accel_mag <= STEP_MAG_THRESHOLD) {
+792:  } else if (accel_mag < STEP_MAG_THRESHOLD) {
+795:  prev_accel_mag = accel_mag;
+864:  mpu.initialize();
+866:  if (!mpu.testConnection()) {
+867:    Serial.println("ERROR: MPU6050 not found at 0x69");
+870:  mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_16);
+871:  mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_2000);
+935:  mpu.getMotion6(&rawAx, &rawAy, &rawAz, &rawGx, &rawGy, &rawGz);
+937:  float accel_mag = sqrt((float)rawAx*rawAx + (float)rawAy*rawAy + (float)rawAz*rawAz);
+938:  updateStepCount(accel_mag);
+939:  checkNoMotion(accel_mag);
